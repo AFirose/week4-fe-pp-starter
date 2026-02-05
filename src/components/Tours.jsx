@@ -1,18 +1,85 @@
+ import { useState } from "react";
 import { tours } from "../data";
-import Title from "./Title";
-import Tour from "./Tour";
 
-const Tours = () => {
+function Tours() {
+  const [toursData, setToursData] = useState(tours);
+
+  const removeTour = (id) => {
+    setToursData(
+      toursData.filter((tour) => tour.id !== id)
+    );
+  };
+
+  const restoreTours = () => {
+    setToursData(tours);
+  };
+
   return (
-    <section className="section" id="tours">
-      <Title title="featured" subTitle="tours" />
+    <section className="section">
+      <div className="section-title">
+        <h2>featured tours</h2>
+        <div className="underline"></div>
+      </div>
 
       <div className="section-center featured-center">
-        {tours.map((tour) => {
-          return <Tour key={tour.id} {...tour} />;
-        })}
+        {toursData.length === 0 ? (
+          <div className="tour-btn">
+            <h4>no tours left</h4>
+            <button className="btn" onClick={restoreTours}>
+              refresh
+            </button>
+          </div>
+        ) : (
+          toursData.map((tour) => {
+            const {
+              id,
+              image,
+              date,
+              title,
+              info,
+              location,
+              duration,
+              cost,
+            } = tour;
+
+            return (
+              <article key={id} className="tour-card">
+                <div className="tour-img-container">
+                  <img src={image} alt={title} className="tour-img" />
+                  <p className="tour-date">{date}</p>
+                </div>
+
+                <div className="tour-info">
+                  <div className="tour-title">
+                    <h4>{title}</h4>
+                    <p>${cost}</p>
+                  </div>
+
+                  <p>{info}</p>
+
+                  <div className="tour-footer">
+                    <p>
+                      <span>
+                        <i className="fas fa-map"></i>
+                      </span>
+                      {location}
+                    </p>
+                    <p>{duration} days</p>
+                    <button
+                      className="btn"
+                      onClick={() => removeTour(id)}
+                    >
+                      not interested
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })
+        )}
       </div>
     </section>
   );
-};
+}
+
 export default Tours;
